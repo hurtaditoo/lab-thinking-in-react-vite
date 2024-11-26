@@ -6,13 +6,31 @@ import SearchBar from "./SearchBar";
 import ProductTable from "./ProductTable";
 
 function ProductsPage() {
-  const [products, setProducts] = useState(jsonData);
+  const [products] = useState(jsonData);
+  const [search, setSearch] = useState("");
+  const [inStock, setInStock] = useState(false);
+
+  const handleSearch = (event) => { setSearch(event.target.value); };
+
+  const handleInStock = (event) => { setInStock(event.target.checked); };
+
+  const SearchedProducts = (products.filter((product) => {
+    return (
+        product.name.toLowerCase().includes(search.toLowerCase()) &&
+        (inStock ? product.inStock : true)
+    );
+  }));
 
   return (
     <div>
       <h1>IronStore</h1>
-      <SearchBar />
-      <ProductTable products={jsonData} />
+      <SearchBar
+        search={search}
+        handleSearch={handleSearch}
+        inStockOnly={inStock}
+        handleInStockChange={handleInStock}
+      />
+      <ProductTable products={SearchedProducts} />
     </div>
   );
 }
